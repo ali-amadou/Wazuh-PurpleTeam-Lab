@@ -1,0 +1,19 @@
+# Windows logs failed logon attempts under Event ID 4625 (AuthenticationPackageName: NTLM, failure code %%2313).
+
+# To prevent alert fatigue while catching active bruteforce or password spraying campaigns, a custom time-correlated rule was engineered in /var/ossec/etc/rules/local_rules.xml:
+
+
+<group name="local,syslog,sshd,">
+  <!-- Custom Rule: High-Severity NTLM Bruteforce / Password Spraying Detection -->
+  <rule id="100100" level="10">
+    <if_matched_sid>60122</if_matched_sid>
+    <same_srcip />
+    <frequency>5</frequency>
+    <timeframe>60</timeframe>
+    <description>SOC Alert: More than 5 NTLM/Windows logon failures from $(srcip) within 60 seconds.</description>
+    <mitre>
+      <id>T1110.003</id>
+    </mitre>
+    <group>authentication_failures,pci_dss_10.2.4,pci_dss_10.2.5,gdpr_IV_35.7.d,</group>
+  </rule>
+</group>
